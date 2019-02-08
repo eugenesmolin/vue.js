@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue js</title>
+</head>
+<body>
+
+<style>
+    * {
+        font-family: RobotoRegular, sans-serif;
+    }
+
+    .list {
+        padding: 0;
+    }
+
+    .list__car {
+        display: inline-block;
+        list-style: none;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .list__car.active {
+        background-color: green;
+        border: 1px solid green;
+        color: #fff;
+    }
+
+    .cars {
+        padding: 0;
+    }
+
+    .cars__car {
+        list-style: none;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    .cars__img {
+        width: 100%;
+        max-width: 100px;
+        min-height: 100px;
+        float: left;
+        margin-right: 15px;
+    }
+
+    .cars__name,
+    .cars__model,
+    .cars__year {
+        margin-bottom: 5px;
+    }
+
+    .cars__phone {
+        height: 36px;
+    }
+</style>
+
+
+<div id="app">
+
+    <div>
+        <input type="text" v-model="search">
+    </div>
+
+    <ol class="list">
+        <li
+                v-for="(car, index) in filteredCars"
+                class="list__car"
+                :class="{'active': selectedCar === index}"
+                @click="clickCar(index)"
+        >
+            {{ car.name }}
+        </li>
+    </ol>
+
+    <div class="cars">
+        <li class="cars__car">
+            <img class="cars__img"
+                 :src="carShow.img"
+                 :alt="carShow.name"
+            >
+            <div class="cars__name">Name - {{ carShow.name }}</div>
+            <div class="cars__model">Model - {{ carShow.model }}</div>
+            <div class="cars__year">Year - {{ carShow.year }}</div>
+            <div class="cars__phone">
+                <div v-if="visiblePhone">{{ carShow.phone }}</div>
+            </div>
+            <div>
+                <button @click="visiblePhone = !visiblePhone">{{ phoneBtnText }}</button>
+                <button>Buy</button>
+            </div>
+        </li>
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
