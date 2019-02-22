@@ -3,69 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Vue js</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="app.css">
 </head>
 <body>
-
-<style>
-    * {
-        font-family: RobotoRegular, sans-serif;
-    }
-
-    .list {
-        padding: 0;
-    }
-
-    .list__car {
-        display: inline-block;
-        list-style: none;
-        margin-bottom: 10px;
-        margin-right: 10px;
-        border: 1px solid #ccc;
-        padding: 5px 10px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .list__car.active {
-        background-color: green;
-        border: 1px solid green;
-        color: #fff;
-    }
-
-    .cars {
-        padding: 0;
-    }
-
-    .cars__car {
-        list-style: none;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        padding: 10px;
-    }
-
-    .cars__img {
-        width: 100%;
-        max-width: 100px;
-        min-height: 100px;
-        float: left;
-        margin-right: 15px;
-    }
-
-    .cars__name,
-    .cars__model,
-    .cars__year {
-        margin-bottom: 5px;
-    }
-
-    .cars__phone {
-        height: 36px;
-    }
-</style>
 
 
 <div id="app">
 
-    <div>
+    <div class="search-block">
+        Search car:
         <input type="text" v-model="search">
     </div>
 
@@ -76,28 +24,60 @@
                 :class="{'active': selectedCar === index}"
                 @click="clickCar(index)"
         >
-            {{ car.name }}
+            {{ car.name }} - {{ car.model }}
         </li>
     </ol>
 
     <div class="cars">
-        <li class="cars__car">
-            <img class="cars__img"
-                 :src="carShow.img"
-                 :alt="carShow.name"
-            >
+        <div class="cars__car">
+            <div class="cars__img">
+                <img :src="carShow.img" :alt="carShow.name">
+            </div>
             <div class="cars__name">Name - {{ carShow.name }}</div>
             <div class="cars__model">Model - {{ carShow.model }}</div>
             <div class="cars__year">Year - {{ carShow.year }}</div>
             <div class="cars__phone">
-                <div v-if="visiblePhone">{{ carShow.phone }}</div>
+                <transition name="phone">
+                    <div v-if="visiblePhone">{{ carShow.phone }}</div>
+                </transition>
             </div>
             <div>
-                <button @click="visiblePhone = !visiblePhone">{{ phoneBtnText }}</button>
-                <button>Buy</button>
+                <button class="btn btn-outline-success" @click="visiblePhone = !visiblePhone">{{ phoneBtnText }}</button>
+                <button class="btn btn-primary" @click="visibleModal = true">Buy</button>
             </div>
-        </li>
+        </div>
     </div>
+
+    <div v-if="logs.length !== 0">
+        <ul class="list-group">
+            <li
+                    v-for="log in logs"
+                    class="list-group-item"
+                    :class="{
+                        'list-group-item-danger': log.type === 'cancel',
+                        'list-group-item-success': log.type === 'ok'
+                    }"
+            >
+                {{ log.text }} - {{ log.date | date }}
+            </li>
+        </ul>
+    </div>
+
+    <transition name="modal">
+        <div class="modal-window" v-if="visibleModal">
+            <span class="close" @click="visibleModal = false">&#10006;</span>
+            <h3>Modal window</h3>
+            <p>Current car - <strong>{{ carShow.name }}</strong></p>
+            <div class="cars__name">Name - {{ carShow.name }}</div>
+            <div class="cars__model">Model - {{ carShow.model }}</div>
+            <div class="cars__year">Year - {{ carShow.year }}</div>
+            <div>
+                <button @click="newOrder">Buy</button>
+                <button @click="cancelOrder">Cancel</button>
+            </div>
+        </div>
+    </transition>
+    <div class="overlay" v-if="visibleModal" @click="visibleModal = false"></div>
 
 </div>
 
